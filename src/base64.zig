@@ -2,7 +2,7 @@ const std = @import("std");
 
 // Base64 encoding and decoding functions
 
-pub fn encode(alloc: std.mem.Allocator, text: []const u8) ![]u8 {
+pub fn decode(alloc: std.mem.Allocator, text: []const u8) ![]u8 {
     const dec = std.base64.standard.decoderWithIgnore("\n\r\t ");
     const buf = try alloc.alloc(u8, dec.calcSizeUpperBound(text.len));
 
@@ -15,16 +15,16 @@ pub fn encode(alloc: std.mem.Allocator, text: []const u8) ![]u8 {
 test "dec simple test" {
     const alloc = std.testing.allocator;
     const text = "SGVsbG8sIFdvcmxkIQ==";
-    const encoded = try encode(alloc, text);
-    defer alloc.free(encoded);
+    const decoded = try decode(alloc, text);
+    defer alloc.free(decoded);
 
-    try std.testing.expectEqualStrings("Hello, World!", encoded);
+    try std.testing.expectEqualStrings("Hello, World!", decoded);
 }
 
 test "ignore whitespace" {
     const alloc = std.testing.allocator;
     const text = "SGVsbG8sIFdvcmxkIQ==\n\t\r";
-    const decoded = try encode(alloc, text);
+    const decoded = try decode(alloc, text);
     defer alloc.free(decoded);
 
     try std.testing.expectEqualStrings("Hello, World!", decoded);
@@ -33,7 +33,7 @@ test "ignore whitespace" {
 test "index[0] of jpeg" {
     const alloc = std.testing.allocator;
     const text = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAC0lEQVR42mP8z8BQDwAFgwJ/l9X5AAAAAElFTkSuQmCC";
-    const decoded = try encode(alloc, text);
+    const decoded = try decode(alloc, text);
     defer alloc.free(decoded);
 
     try std.testing.expectEqual(decoded[0], 0x89);
