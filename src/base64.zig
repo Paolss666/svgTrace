@@ -30,11 +30,20 @@ test "ignore whitespace" {
     try std.testing.expectEqualStrings("Hello, World!", decoded);
 }
 
-test "index[0] of jpeg" {
+test "index[0] of PNG image" {
     const alloc = std.testing.allocator;
     const text = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAC0lEQVR42mP8z8BQDwAFgwJ/l9X5AAAAAElFTkSuQmCC";
     const decoded = try decode(alloc, text);
     defer alloc.free(decoded);
 
     try std.testing.expectEqual(decoded[0], 0x89);
+}
+
+test "index[0] of JPEG image" {
+    const alloc = std.testing.allocator;
+    const text = "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcU";
+    const decoded = try decode(alloc, text);
+    defer alloc.free(decoded);
+
+    try std.testing.expectEqual(decoded[0], 0xFF);
 }
