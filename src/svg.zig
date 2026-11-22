@@ -46,10 +46,10 @@ pub fn attr(text: []const u8, name: []const u8) ?[]const u8 {
         pos = i + name.len;
 
         if (i == 0 or !std.ascii.isWhitespace(text[i - 1])) continue;
-        if (!std.ascii.isWhitespace(u8, text[pos..], "=\"")) continue;
+        if (!std.mem.startsWith(u8, text[pos..], "=\"")) continue;
 
         const start = pos + 2 ; // skip ="
-        const end = std.mem.indexOfPos(u8, text, start, '"') orelse return null;
+        const end = std.mem.indexOfScalarPos(u8, text, start, '"') orelse return null;
         return text[start .. end];
     }
     return null;
