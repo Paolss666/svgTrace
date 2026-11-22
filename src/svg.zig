@@ -55,3 +55,27 @@ pub fn attr(text: []const u8, name: []const u8) ?[]const u8 {
     return null;
 }
 
+test "finds embedded images and skips external ones" {
+    const svg =
+        \\<svg xmlns="http://www.w3.org/2000/svg">
+        \\  <rect x="0" y="0" width="10" height="10"/>
+        \\  <image x="5" y="6" width="100" height="50" xlink:href="data:image/jpeg;base64,AAAA"/>
+        \\  <image x="1" y="2" width="30" height="40" href="data:image/png;base64,BBBB"/>
+        \\  <image x="0" y="0" href="photo.jpg"/>
+        \\</svg>
+    ;
+    var it = ImageIterator{ .svg = svg };
+
+    const a = it.next().?;
+    try std.testing.expectEqualStrings("image/jpeg", a.mime);
+    try std.testing.expectEqualStrings("AAAA", a.base64);
+    try std.testing.expectEqualStrings("100", attr(a.text, "width").?);
+
+    const b = it.next().?;
+    try std.testing.expectEqualStrings("image/png", b.mime);
+    try std.testing.expectEqualStrings("BBBB", b.base64);
+    try std.testing.expectEqualStrings("30", attr(b.text, "width").?);
+
+    try std.testing.expect(it.next() == null);
+}
+
