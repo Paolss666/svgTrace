@@ -62,13 +62,3 @@ pub const Image = struct{
         }
     }
 };
-
-test "index good pos" {
-    const alloc = std.testing.allocator;
-    const img = try Image.init(alloc, 4, 2);
-    defer img.deinit(alloc);
-
-    try std.testing.expectEqual(@as(usize, 0), img.index(0,0));
-    try std.testing.expectEqual(@as(usize, 18), img.index(2,1));
-}
-

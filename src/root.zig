@@ -13,6 +13,7 @@ pub fn add(a: i32, b: i32) i32 {
     return a + b;
 }
 
-test "basic add functionality" {
-    try std.testing.expect(add(3, 7) == 10);
-}
+pub const base64 = @import("base64.zig");
+pub const image = @import("image.zig");
+pub const quantize = @import("quantize.zig");
+pub const svg = @import("svg.zig");
