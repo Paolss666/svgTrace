@@ -25,7 +25,7 @@ pub fn main(init: std.process.Init) !void {
 
     defer img.deinit(alloc);
 
-    img.setPixels(2, 1, .{ .r = 255, .g = 0, .b = 0 });
+    img.setPixels(2, 1, .{ 255, 0, 0 });
     img.print();
 
     std.debug.print("{any}\n", .{img.pixels});
